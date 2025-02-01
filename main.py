@@ -10,7 +10,7 @@ from config import *
 bot = TeleBot(TOKEN)
 # Команда /start
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Привет! Я бот для работы с недвижимостью. Вы можете использовать команды для получения информации о недвижимости.")
+    update.message.reply_text("Привет! Я бот для работы с недвижимостью. Вы можете использовать команды для получения информации о недвижимости. Чтобы получить список команд напишите /help. Приятного использования")
 
 
 def help(update: Update, context: CallbackContext):
