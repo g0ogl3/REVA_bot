@@ -1,27 +1,27 @@
 import sqlite3
 from sqlite3 import Error
 from config import DATABASE
-# Функция для подключения к базе данных SQLite (если базы данных нет, она будет создана)
+# Function to connect to SQLite database (if the database does not exist, it will be created)
 def create_connection(path):
     connection = sqlite3.connect(DATABASE)
     try:
         connection = sqlite3.connect(path)
-        print("Подключение к базе данных SQLite успешно!")
+        print("Connection to SQLite database is successful!")
     except Error as e:
-        print(f"Ошибка подключения: '{e}'")
+        print(f"Connection error: '{e}'")
     return connection
 
-# Функция для выполнения SQL-запросов
+# Function for executing SQL queries
 def execute_query(connection, query):
     cursor = connection.cursor()
     try:
         cursor.executescript(query)
         connection.commit()
-        print("Запрос выполнен успешно!")
+        print("Request completed successfully!")
     except Error as e:
-        print(f"Ошибка выполнения запроса: '{e}'")
+        print(f"Error executing request: '{e}'")
 
-# Функция для получения данных (SELECT-запросы)
+# Function for getting data (SELECT queries)
 def fetch_query(connection, query):
     cursor = connection.cursor()
     result = None
@@ -30,9 +30,9 @@ def fetch_query(connection, query):
         result = cursor.fetchall()
         return result
     except Error as e:
-        print(f"Ошибка при получении данных: '{e}'")
+        print(f"Error while receiving data: '{e}'")
 
-# Функция для инициализации базы данных (создание таблиц и вставка данных)
+# Function to initialize the database (create tables and insert data)
 def init_db():
     connection = create_connection(DATABASE)
 
@@ -86,38 +86,38 @@ def init_db():
 
     insert_data_query = """
     INSERT INTO Locations (city, district, postal_code)
-    VALUES ('Москва', 'Центральный', '101000'),
-           ('Санкт-Петербург', 'Василеостровский', '199178'),
-           ('Новосибирск', 'Центральный', '630099');
+    VALUES ('Moscow', 'Central', '101000'),
+           ('Saint Petersburg', 'Vasileostrovsky', '199178'),
+           ('Novosibirsk', 'Central', '630099');
 
     INSERT INTO Agents (agent_name, phone_number, email, agency_name)
-    VALUES ('Иван Иванов', '+79991112233', 'ivanov@realestate.ru', 'RealEstate Agency'),
-           ('Анна Смирнова', '+79991112234', 'smirnova@realestate.ru', 'Premium Properties'),
-           ('Петр Петров', '+79991112235', 'petrov@realestate.ru', 'Luxury Realty');
+    VALUES ('Ivan Ivanov', '+79991112233', 'ivanov@realestate.ru', 'RealEstate Agency'),
+           ('Anna Smirnova', '+79991112234', 'smirnova@realestate.ru', 'Premium Properties'),
+           ('Peter Petrov', '+79991112235', 'petrov@realestate.ru', 'Luxury Realty');
 
     INSERT INTO Properties (property_type, size, price, num_bedrooms, num_bathrooms, location_id, agent_id, available_from, status)
-    VALUES ('Квартира', 80.50, 12000000, 3, 2, 1, 1, '2025-01-10', 'в продаже'),
-           ('Дом', 150.00, 25000000, 4, 3, 2, 2, '2024-12-01', 'в аренде'),
-           ('Офис', 200.00, 30000000, 0, 2, 3, 3, '2025-02-15', 'продано');
+    VALUES ('Flat', 80.50, 12000000, 3, 2, 1, 1, '2025-01-10', 'on sale'),
+           ('House', 150.00, 25000000, 4, 3, 2, 2, '2024-12-01', 'for rent'),
+           ('Office', 200.00, 30000000, 0, 2, 3, 3, '2025-02-15', 'sold');
 
     INSERT INTO Customers (customer_name, phone_number, email, customer_type)
-    VALUES ('Сергей Павлов', '+79991234567', 'sergei@mail.com', 'покупатель'),
-           ('Елена Кузнецова', '+79992345678', 'elena@mail.com', 'арендатор');
+    VALUES ('Sergey Pavlov', '+79991234567', 'sergei@mail.com', 'purchaser'),
+           ('Elena Kuznetsova', '+79992345678', 'elena@mail.com', 'renter');
 
     INSERT INTO Transactions (property_id, customer_id, transaction_date, transaction_type, final_price)
-    VALUES (1, 1, '2025-01-20', 'покупка', 11800000),
-           (2, 2, '2024-12-10', 'аренда', 150000);
+    VALUES (1, 1, '2025-01-20', 'purchase', 11800000),
+           (2, 2, '2024-12-10', 'rent', 150000);
     """
     execute_query(connection, insert_data_query)
 
-# Функции для работы с запросами
+# Functions for working with queries
 def get_properties_for_sale():
     connection = create_connection(DATABASE)
     query = """
     SELECT property_type, size, price, num_bedrooms, num_bathrooms, city, district
     FROM Properties
     JOIN Locations ON Properties.location_id = Locations.location_id
-    WHERE status = 'в продаже';
+    WHERE status = 'on sale';
     """
     return fetch_query(connection, query)
 
