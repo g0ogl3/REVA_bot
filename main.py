@@ -8,77 +8,77 @@ from logic import *
 from config import *
 
 bot = TeleBot(TOKEN)
-# Команда /start
+# /start command
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Привет! Я бот для работы с недвижимостью. Вы можете использовать команды для получения информации о недвижимости. Чтобы получить список команд напишите /help. Приятного использования")
+    update.message.reply_text("Hello! I'm a real estate bot. You can use commands to get information about a property. To get a list of commands type /help. Enjoy your use")
 
 
 def help(update: Update, context: CallbackContext):
     help_text = (
-        "/start - Начать работу с ботом\n"
-        "/help - Список команд\n"
-        "/sale - Показать недвижимость в продаже\n"
-        "/transactions - Показать последние сделки\n"
-        "/city <город> - Показать недвижимость в указанном городе\n"
-        "/agents - Показать список агентов недвижимости"
+        "Start working with the bot\n"
+        "/help - List of commands\n"
+        "/sale - Show properties for sale\n"
+        "/transactions - Show recent transactions\n"
+        "/city <name of the city> - Show properties in the specified city\n"
+        "/agents - Show list of real estate agents"
     )
     update.message.reply_text(help_text)
 
-# Команда /sale для показа недвижимости в продаже
+# /sale command to display properties for sale
 def sale(update: Update, context: CallbackContext):
     properties = logic.get_properties_for_sale()
     if properties:
-        message = "Недвижимость в продаже:\n\n"
+        message = "Properties for sale:\n\n"
         for property in properties:
-            message += f"Тип: {property[0]}, \n Размер: {property[1]} м², \n Цена: {property[2]} руб, \n Спальни: {property[3]}, \n Ванные: {property[4]}, \n Город: {property[5]}, \n Район: {property[6]}\n"
+            message += f"Type: {property[0]}, \n Size: {property[1]} m², \n Price: {property[2]} $, \n Bedrooms: {property[3]}, \n Bathrooms: {property[4]}, \n City: {property[5]}, \n District: {property[6]}\n"
     else:
-        message = "Нет недвижимости в продаже."
+        message = "There are no properties for sale."
     update.message.reply_text(message)
 
-# Команда /transactions для показа последних сделок
+# /transactions command to show latest transactions
 def transactions(update: Update, context: CallbackContext):
     transactions = logic.get_transactions()
     if transactions:
-        message = "Последние сделки по покупке:\n\n"
+        message = "Latest purchase deals:\n\n"
         for transaction in transactions:
-            message += f"Клиент: {transaction[0]}, \n Тип недвижимости: {transaction[1]}, \n Цена: {transaction[2]} руб, \n Дата: {transaction[3]}\n"
+            message += f"Client: {transaction[0]}, \n Property type: {transaction[1]}, \n Price: {transaction[2]} $, \n Date: {transaction[3]}\n"
     else:
-        message = "Нет доступных сделок."
+        message = "No deals available"
     update.message.reply_text(message)
 
-# Команда /city для поиска недвижимости по городу
+# /city command to search for real estate by city
 def city(update: Update, context: CallbackContext):
     if context.args:
         city_name = " ".join(context.args)
         properties = logic.get_properties_in_city(city_name)
         if properties:
-            message = f"Недвижимость в городе {city_name}:\n\n"
+            message = f"Real estate in the city {city_name}:\n\n"
             for property in properties:
-                message += f"Тип: {property[0]}, \n Размер: {property[1]} м², \n Цена: {property[2]} руб, \n Спальни: {property[3]}, \n Ванные: {property[4]}\n"
+                message += f"Type: {property[0]}, \n Size: {property[1]} m², \n Price: {property[2]} $, \n Bedrooms: {property[3]}, \n Bathrooms: {property[4]}\n"
         else:
-            message = f"Нет недвижимости в городе {city_name}."
+            message = f"No real estate in the city {city_name}."
     else:
-        message = "Пожалуйста, укажите город. Пример: /city Москва"
+        message = "Please indicate the city. Example: /city Moscow"
     update.message.reply_text(message)
 
 
 def agents(update: Update, context: CallbackContext):
     agents = logic.get_agents()
     if agents:
-        message = "Список агентов недвижимости:\n\n"
+        message = "List of real estate agents:\n\n"
         for agent in agents:
-            message += f"Имя: {agent[0]}, \n Телефон: {agent[1]}, \n Email: {agent[2]} \n"
+            message += f"Name: {agent[0]}, \n Phone: {agent[1]}, \n Email: {agent[2]} \n"
     else:
-        message = "Нет доступных агентов."
+        message = "No agents available."
     update.message.reply_text(message)
 
 def main():
 
-    # Настройка Updater и Dispatcher
+    # Setting Up Updater and Dispatcher
     updater = Updater(TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
-    # Обработчики команд
+    # Command handlers
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help))
     dispatcher.add_handler(CommandHandler("sale", sale))
@@ -86,7 +86,7 @@ def main():
     dispatcher.add_handler(CommandHandler("city", city))
     dispatcher.add_handler(CommandHandler("agents", agents))
 
-    # Запуск бота
+    # Bot launching
     updater.start_polling()
     updater.idle()
 
